@@ -30,9 +30,21 @@ public:
         RemoveRecursive(root, value);
     }
 
-    void Print()
+    void PreorderWalk()
     {
-        PrintRecursive(root);
+        PreoderWalkRecursive(root);
+        std::cout << std::endl;
+    }
+
+    void InorderWalk()
+    {
+        InorderWalkRecursive(root);
+        std::cout << std::endl;
+    }
+
+    void PostorderWalk()
+    {
+        PostorderWalkRecursive(root);
         std::cout << std::endl;
     }
 
@@ -101,14 +113,32 @@ private:
         }
     }
 
-    void PrintRecursive(Node *node)
+    void PreoderWalkRecursive(Node *node)
     {
         if (node == nullptr) return;
 
         std::cout << node->value << " ";
 
-        PrintRecursive(node->left);
-        PrintRecursive(node->right);
+        PreoderWalkRecursive(node->left);
+        PreoderWalkRecursive(node->right);
+    }
+
+    void InorderWalkRecursive(Node *node)
+    {
+        if (node == nullptr) return;
+
+        InorderWalkRecursive(node->left);
+        std::cout << node->value << " ";
+        InorderWalkRecursive(node->right);
+    }
+
+    void PostorderWalkRecursive(Node *node)
+    {
+        if (node == nullptr) return;
+
+        PostorderWalkRecursive(node->left);
+        PostorderWalkRecursive(node->right);
+        std::cout << node->value << " ";
     }
 
     void PrintRecursive(Node *node, int low, int high)
@@ -147,14 +177,9 @@ int main()
 
     for (int i = 0; i < 10; i++) bst.Insert(arr[i]);
 
-    bst.Print();
-    bst.Print(12, 45);
-    bst.Remove(48);
-    bst.Print();
-    bst.Remove(11);
-    bst.Print();
-    bst.Remove(8);
-    bst.Print();
+    bst.PreorderWalk();
+    bst.InorderWalk();
+    bst.PostorderWalk();
 
     return 0;
 }

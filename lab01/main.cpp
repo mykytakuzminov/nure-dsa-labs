@@ -106,7 +106,7 @@ private:
             }
             else
             {
-                Node* minRightNode = FindMin(root->right);
+                Node* minRightNode = FindMin(node->right);
                 node->value = minRightNode->value;
                 RemoveRecursive(node->right, minRightNode->value);
             }

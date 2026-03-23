@@ -5,13 +5,13 @@ class BinarySearchTree
 private:
     struct Node
     {
-        int value;
+        int key;
         Node *left = nullptr;
         Node *right = nullptr;
 
-        Node(int value)
+        Node(int key)
         {
-            this->value = value;
+            this->key = key;
         }
     };
 
@@ -20,14 +20,14 @@ private:
 public:
     BinarySearchTree() {};
 
-    void Insert(int value)
+    void Insert(int key)
     {
-        InsertRecursive(root, value);
+        InsertRecursive(root, key);
     }
 
-    void Remove(int value)
+    void Delete(int key)
     {
-        RemoveRecursive(root, value);
+        DeleteRecursive(root, key);
     }
 
     void PreorderWalk()
@@ -48,42 +48,42 @@ public:
         std::cout << std::endl;
     }
 
-    void Print(int low, int high)
+    void PrintRange(int low, int high)
     {
-        PrintRecursive(root, low, high);
+        PrintRangeRecursive(root, low, high);
         std::cout << std::endl;
     }
 
 private:
-    void InsertRecursive(Node *&node, int value)
+    void InsertRecursive(Node *&node, int key)
     {
         if (node == nullptr)
         {
-            node = new Node(value);
+            node = new Node(key);
             return;
         }
 
-        if (value < node->value)
+        if (key < node->key)
         {
-            InsertRecursive(node->left, value);
+            InsertRecursive(node->left, key);
         }
-        if (value > node->value)
+        if (key > node->key)
         {
-            InsertRecursive(node->right, value);
+            InsertRecursive(node->right, key);
         }
     }
 
-    void RemoveRecursive(Node *&node, int value)
+    void DeleteRecursive(Node *&node, int key)
     {
         if (node == nullptr) return;
 
-        if (value < node->value)
+        if (key < node->key)
         {
-            RemoveRecursive(node->left, value);
+            DeleteRecursive(node->left, key);
         }
-        else if (value > node->value)
+        else if (key > node->key)
         {
-            RemoveRecursive(node->right, value);
+            DeleteRecursive(node->right, key);
         }
         else
         {
@@ -107,8 +107,8 @@ private:
             else
             {
                 Node* minRightNode = FindMin(node->right);
-                node->value = minRightNode->value;
-                RemoveRecursive(node->right, minRightNode->value);
+                node->key = minRightNode->key;
+                DeleteRecursive(node->right, minRightNode->key);
             }
         }
     }
@@ -117,7 +117,7 @@ private:
     {
         if (node == nullptr) return;
 
-        std::cout << node->value << " ";
+        std::cout << node->key << " ";
 
         PreoderWalkRecursive(node->left);
         PreoderWalkRecursive(node->right);
@@ -128,7 +128,7 @@ private:
         if (node == nullptr) return;
 
         InorderWalkRecursive(node->left);
-        std::cout << node->value << " ";
+        std::cout << node->key << " ";
         InorderWalkRecursive(node->right);
     }
 
@@ -138,26 +138,26 @@ private:
 
         PostorderWalkRecursive(node->left);
         PostorderWalkRecursive(node->right);
-        std::cout << node->value << " ";
+        std::cout << node->key << " ";
     }
 
-    void PrintRecursive(Node *node, int low, int high)
+    void PrintRangeRecursive(Node *node, int low, int high)
     {
         if (node == nullptr) return;
 
-        if (low <= node->value and node->value <= high)
+        if (low <= node->key and node->key <= high)
         {
-            std::cout << node->value << " ";
+            std::cout << node->key << " ";
         }
 
-        if (low < node->value)
+        if (low < node->key)
         {
-            PrintRecursive(node->left, low, high);
+            PrintRangeRecursive(node->left, low, high);
         }
 
-        if (high > node->value)
+        if (high > node->key)
         {
-            PrintRecursive(node->right, low, high);
+            PrintRangeRecursive(node->right, low, high);
         }
     }
 

@@ -16,6 +16,12 @@ private:
         }
     };
 
+    struct SearchResult
+    {
+        bool found = false;
+        int visited = 0;
+    };
+
     Node *root = nullptr;
 
 public:
@@ -26,14 +32,20 @@ public:
         DestroyRecursive(root);
     };
 
-    void Insert(int key)
+    // returns amount of visited nodes
+    int Insert(int key)
     {
-        InsertRecursive(root, key);
+        int visited = 0;
+        InsertRecursive(root, key, visited);
+        return visited;
     }
 
-    void Delete(int key)
+    // returns amount of visited nodes
+    int Delete(int key)
     {
-        DeleteRecursive(root, key);
+        int visited = 0;
+        DeleteRecursive(root, key, visited);
+        return visited;
     }
 
     int Height()
@@ -41,15 +53,21 @@ public:
         return HeightRecursive(root);
     }
 
-    bool Search(int key)
+    // returns amount of visited nodes and if it was found
+    SearchResult Search(int key)
     {
-        return SearchRecursive(root, key) != nullptr;
+        SearchResult result;
+        int visited = 0;
+        result.found = SearchRecursive(root, key, visited) != nullptr;
+        result.visited = visited;
+        return result;
     }
 
     // next bigger one
     Node* Successor(int key)
     {
-        Node *node = SearchRecursive(root, key);
+        int dummy = 0;
+        Node *node = SearchRecursive(root, key, dummy);
 
         if (node == nullptr) return nullptr;
 
@@ -77,7 +95,8 @@ public:
     // previous smaller one
     Node* Predecessor(int key)
     {
-        Node *node = SearchRecursive(root, key);
+        int dummy = 0;
+        Node *node = SearchRecursive(root, key, dummy);
 
         if (node == nullptr) return nullptr;
 
@@ -123,8 +142,12 @@ private:
         delete node;
     }
 
-    void InsertRecursive(Node *&node, int key, Node* parent = nullptr)
+    void InsertRecursive(Node *&node, int key, int &visited, Node* parent = nullptr)
     {
+        // amount of visited nodes
+        // calculates additionally visited nullptr nodes
+        visited++;
+
         if (node == nullptr)
         {
             node = new Node(key);
@@ -134,26 +157,30 @@ private:
 
         if (key < node->key)
         {
-            InsertRecursive(node->left, key, node);
+            InsertRecursive(node->left, key, visited, node);
         }
-
-        if (key > node->key)
+        else if (key > node->key)
         {
-            InsertRecursive(node->right, key, node);
+            InsertRecursive(node->right, key, visited, node);
         }
+        // duplicates are ignored
     }
 
-    void DeleteRecursive(Node *&node, int key)
+    void DeleteRecursive(Node *&node, int key, int &visited)
     {
+        // amount of visited nodes
+        // calculates additionally visited nullptr nodes
+        visited++;
+
         if (node == nullptr) return;
 
         if (key < node->key)
         {
-            DeleteRecursive(node->left, key);
+            DeleteRecursive(node->left, key, visited);
         }
         else if (key > node->key)
         {
-            DeleteRecursive(node->right, key);
+            DeleteRecursive(node->right, key, visited);
         }
         else
         {
@@ -186,7 +213,7 @@ private:
             {
                 Node* minRightNode = FindMin(node->right);
                 node->key = minRightNode->key;
-                DeleteRecursive(node->right, minRightNode->key);
+                DeleteRecursive(node->right, minRightNode->key, visited);
             }
         }
     }
@@ -200,15 +227,20 @@ private:
         return 1 + std::max(leftHeight, rightHeight);
     }
 
-    Node* SearchRecursive(Node* node, int key)
+    Node* SearchRecursive(Node* node, int key, int &visited)
     {
+        // amount of visited nodes
+        // calculates additionally visited nullptr nodes
+        visited++;
+
         if (node == nullptr) return nullptr;
+
         if (node->key == key) return node;
 
         if (key < node->key)
-            return SearchRecursive(node->left, key);
+            return SearchRecursive(node->left, key, visited);
         else
-            return SearchRecursive(node->right, key);
+            return SearchRecursive(node->right, key, visited);
     }
 
     // left -> parent -> right

@@ -17,6 +17,7 @@ private:
     };
 
     Node *root = nullptr;
+    int size = 0;
 
 public:
     struct SearchResult
@@ -51,6 +52,11 @@ public:
     int Height()
     {
         return HeightRecursive(root);
+    }
+
+    int Size()
+    {
+        return size;
     }
 
     // returns amount of visited nodes and if it was found
@@ -152,6 +158,7 @@ private:
         {
             node = new Node(key);
             node->parent = parent;
+            size += 1;
             return;
         }
 
@@ -215,6 +222,8 @@ private:
                 node->key = minRightNode->key;
                 DeleteRecursive(node->right, minRightNode->key, visited);
             }
+
+            size -= 1;
         }
     }
 

@@ -55,6 +55,8 @@ int main()
         }
     }
 
+    cout << "Size: " << bst.Size() << endl;
+
     double avgSearch = double(searchStats.visited) / searchStats.count;
     double avgInsert = double(insertStats.visited) / insertStats.count;
     double avgDelete = double(deleteStats.visited) / deleteStats.count;

@@ -16,15 +16,15 @@ private:
         }
     };
 
+    Node *root = nullptr;
+
+public:
     struct SearchResult
     {
         bool found = false;
         int visited = 0;
     };
 
-    Node *root = nullptr;
-
-public:
     BinarySearchTree() {};
 
     ~BinarySearchTree()

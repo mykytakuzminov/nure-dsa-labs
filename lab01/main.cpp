@@ -1,5 +1,7 @@
-#include "BinarySearchTree.h"
 #include <random>
+#include <cmath>
+
+#include "BinarySearchTree.h"
 
 using namespace std;
 
@@ -18,17 +20,26 @@ int main()
 
     cout << "Generated BST's height: " << bst.Height() << endl;
 
+    cout << "Performing 200'000 * 10 operations on BST..." << endl;
+
     struct OperationStats
     {
-        int visited = 0;
         int count = 0;
+        double visited = 0;
+        double ratio = 0.0;
+    };
+
+    struct HeightStats
+    {
+        int count = 0;
+        double ratioSum = 0.0;
     };
 
     OperationStats searchStats;
     OperationStats insertStats;
     OperationStats deleteStats;
 
-    cout << "Performing 200'000 * 10 operations on BST..." << endl;
+    HeightStats heightStats;
 
     for (int i = 0; i < 10; i++)
     {
@@ -37,33 +48,67 @@ int main()
             int op = opDist(rng);
             int key = keyDist(rng);
 
+            double logN_current = log2(bst.Size());
+
             switch (op)
             {
                 case 0:
+                {
+                    int visited = bst.Search(key).visited;
                     searchStats.count += 1;
-                    searchStats.visited += bst.Search(key).visited;
+                    searchStats.visited += visited;
+                    searchStats.ratio += visited / logN_current;
                     break;
+                }
                 case 1:
+                {
+                    int visited = bst.Insert(key);
                     insertStats.count += 1;
-                    insertStats.visited += bst.Insert(key);
+                    insertStats.visited += visited;
+                    insertStats.ratio += visited / logN_current;
                     break;
+                }
                 case 2:
+                {
+                    int visited = bst.Delete(key);
                     deleteStats.count += 1;
-                    deleteStats.visited += bst.Delete(key);
+                    deleteStats.visited += visited;
+                    deleteStats.ratio += visited / logN_current;
                     break;
+                }
+            }
+
+            if ((i * 200'000 + j) % 10000 == 0) {
+                heightStats.ratioSum += double(bst.Height()) / logN_current;
+                heightStats.count += 1;
             }
         }
     }
 
-    cout << "Size: " << bst.Size() << endl;
+    cout << "Results: " << endl;
 
-    double avgSearch = double(searchStats.visited) / searchStats.count;
-    double avgInsert = double(insertStats.visited) / insertStats.count;
-    double avgDelete = double(deleteStats.visited) / deleteStats.count;
+    double avgVisitedNodesPerSearch = searchStats.visited / searchStats.count;
+    double avgVisitedNodesPerInsert = insertStats.visited / insertStats.count;
+    double avgVisitedNodesPerDelete = deleteStats.visited / deleteStats.count;
 
-    cout << "Average visited nodes per Search: " << avgSearch << endl;
-    cout << "Average visited nodes per Insert: " << avgInsert << endl;
-    cout << "Average visited nodes per Delete: " << avgDelete << endl;
+    double avgRatioToLogNPerSearch = searchStats.ratio / searchStats.count;
+    double avgRatioToLogNPerInsert = insertStats.ratio / insertStats.count;
+    double avgRatioToLogNPerDelete = deleteStats.ratio / deleteStats.count;
+
+    double avgHeightRatio = heightStats.ratioSum / heightStats.count;
+
+    // 1.0 -> perfect balanced tree
+    // 2.0 -> tree pases x2 nodes
+    // ...
+    // ~50.0 -> tree degradation
+    cout << "Average visited nodes per Search: " << avgVisitedNodesPerSearch
+        << " (ratio to log2(n): " << avgRatioToLogNPerSearch << ")" << endl;
+    cout << "Average visited nodes per Insert: " << avgVisitedNodesPerInsert
+        << " (ratio to log2(n): " << avgRatioToLogNPerInsert << ")" << endl;
+    cout << "Average visited nodes per Delete: " << avgVisitedNodesPerDelete
+        << " (ratio to log2(n): " << avgRatioToLogNPerDelete << ")" << endl;
+
+    cout << "Average height ratio (Height / log2(Size)) : " << avgHeightRatio << endl;
 
     return 0;
 }

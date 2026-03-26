@@ -82,17 +82,17 @@ public:
     }
 
     // next bigger one
-    Node* Successor(int key)
+    int Successor(int key)
     {
         int dummy = 0;
         Node *node = SearchRecursive(root, key, dummy);
 
-        if (node == nullptr) return nullptr;
+        if (node == nullptr) return -1;
 
         // smaller node in the right tree
         if (node->right != nullptr)
         {
-            return FindMin(node->right);
+            return FindMin(node->right)->key;
         }
         // parent for the left child
         else
@@ -106,22 +106,22 @@ public:
                 parent = parent->parent;
             }
 
-            return parent;
+            return parent->key;
         }
     }
 
     // previous smaller one
-    Node* Predecessor(int key)
+    int Predecessor(int key)
     {
         int dummy = 0;
         Node *node = SearchRecursive(root, key, dummy);
 
-        if (node == nullptr) return nullptr;
+        if (node == nullptr) return -1;
 
         // bigger node in the left tree
         if (node->left != nullptr)
         {
-            return FindMax(node->left);
+            return FindMax(node->left)->key;
         }
         // parent for the right child
         else
@@ -135,7 +135,7 @@ public:
                 parent = parent->parent;
             }
 
-            return parent;
+            return parent->key;
         }
     }
 
@@ -295,7 +295,7 @@ private:
             GetRangeRecursive(node->left, low, high, arr, curr);
         }
 
-        if (low <= node->key and node->key <= high)
+        if (low <= node->key && node->key <= high)
         {
             arr[curr] = node->key;
             curr += 1;

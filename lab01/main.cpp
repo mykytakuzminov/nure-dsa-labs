@@ -145,6 +145,9 @@ void checkMainOperations()
     bst.Delete(8);
     printArray(bstInorderWalk, bst.Size());
 
+    cout << "Getting successor for 30: " << bst.Successor(30) << endl;
+    cout << "Getting predecessor for 30: " << bst.Predecessor(30) << endl << endl;
+
     delete[] bstInorderWalk;
     delete[] bstRange.arr;
 }

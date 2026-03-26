@@ -26,6 +26,18 @@ public:
         int visited = 0;
     };
 
+    struct RangeResult
+    {
+        int* arr;
+        int size;
+
+        RangeResult(int* arr, int size)
+        {
+            this->arr = arr;
+            this->size = size;
+        }
+    };
+
     BinarySearchTree() {};
 
     ~BinarySearchTree()
@@ -127,16 +139,24 @@ public:
         }
     }
 
-    void InorderWalk()
+    int* GetInorderWalk()
     {
-        InorderWalkRecursive(root);
-        std::cout << std::endl;
+        int* arr = new int[size];
+        int curr = 0;
+
+        GetInorderWalkRecursive(root, arr, curr);
+
+        return arr;
     }
 
-    void PrintRange(int low, int high)
+    RangeResult GetRange(int low, int high)
     {
-        PrintRangeRecursive(root, low, high);
-        std::cout << std::endl;
+        int* arr = new int[size];
+        int curr = 0;
+
+        GetRangeRecursive(root, low, high, arr, curr);
+
+        return RangeResult(arr, curr);
     }
 
 private:
@@ -253,33 +273,37 @@ private:
     }
 
     // left -> parent -> right
-    void InorderWalkRecursive(Node *node)
+    void GetInorderWalkRecursive(Node *node, int *&arr, int &curr)
     {
         if (node == nullptr) return;
 
-        InorderWalkRecursive(node->left);
-        std::cout << node->key << " ";
-        InorderWalkRecursive(node->right);
+        GetInorderWalkRecursive(node->left, arr, curr);
+
+        arr[curr] = node->key;
+        curr += 1;
+
+        GetInorderWalkRecursive(node->right, arr, curr);
     }
 
     // left -> parent -> right (with range)
-    void PrintRangeRecursive(Node *node, int low, int high)
+    void GetRangeRecursive(Node *node, int low, int high, int *&arr, int &curr)
     {
         if (node == nullptr) return;
 
         if (low < node->key)
         {
-            PrintRangeRecursive(node->left, low, high);
+            GetRangeRecursive(node->left, low, high, arr, curr);
         }
 
         if (low <= node->key and node->key <= high)
         {
-            std::cout << node->key << " ";
+            arr[curr] = node->key;
+            curr += 1;
         }
 
         if (high > node->key)
         {
-            PrintRangeRecursive(node->right, low, high);
+            GetRangeRecursive(node->right, low, high, arr, curr);
         }
     }
 

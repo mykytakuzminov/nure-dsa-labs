@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int main()
+void showNormalizedMetrics()
 {
     BinarySearchTree bst;
 
@@ -109,6 +109,49 @@ int main()
         << " (ratio to log2(n): " << avgRatioToLogNPerDelete << ")" << endl;
 
     cout << "Average height ratio (Height / log2(Size)) : " << avgHeightRatio << endl;
+}
 
+void printArray(int *arr, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (i == 0) cout << "[";
+        cout << arr[i];
+        if (i != size - 1) cout << ", ";
+        else cout << "]" << endl << endl;
+    }
+}
+
+void checkMainOperations()
+{
+    BinarySearchTree bst;
+
+    int arr[10] = {30, 40, 50, 24, 8, 58, 48, 26, 11, 13};
+
+    cout << "Adding elemets to the tree..." << endl;
+    for(int i = 0; i < 10; i++) bst.Insert(arr[i]);
+
+    int* bstInorderWalk = bst.GetInorderWalk();
+    cout << "Getting in-order walk..." << endl;
+    printArray(bstInorderWalk, bst.Size());
+
+    auto bstRange = bst.GetRange(12, 45);
+    cout << "Getting array within range [12; 45]..." << endl;
+    printArray(bstRange.arr, bstRange.size);
+
+    cout << "Deleting elements (48, 11, 8)..." << endl;
+    bst.Delete(48);
+    bst.Delete(11);
+    bst.Delete(8);
+    printArray(bstInorderWalk, bst.Size());
+
+    delete[] bstInorderWalk;
+    delete[] bstRange.arr;
+}
+
+int main()
+{
+    checkMainOperations();
+    showNormalizedMetrics();
     return 0;
 }
